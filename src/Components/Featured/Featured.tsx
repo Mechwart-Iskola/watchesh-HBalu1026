@@ -1,25 +1,38 @@
 
-import './featured.css'
-
-import FeatureCard from './featuredCard/FeatureCard'
-
-{/* Fetcheld be az adatokat a featured jsonból és jelenítsd meg a featured_container elemből*/}
-
-{/* Állítsd be a featured.css-ben, hogy az órák 992px szélesség alatt egymás alá kerüljenek a fölött pedig egymás mellé */}
-
+import './featured.css';
+import FeatureCard from './featuredCard/FeatureCard';
+import { useEffect, useState } from 'react';
 
 const Featured = () => {
+  const [featuredWatches, setFeaturedWatches] = useState([]);
 
+  useEffect(() => {
+    const fetchFeaturedData = async () => {
+      try {
+        const response = await fetch('/path/to/featured.json');
+        if (!response.ok) {
+          throw new Error('Failed to fetch featured data');
+        }
+        const data = await response.json();
+        setFeaturedWatches(data);
+      } catch (error) {
+        console.error('Error fetching featured data:', error);
+      }
+    };
 
+    fetchFeaturedData();
+  }, []);
 
   return (
     <section className="featured" id="featured">
-    <h2 className="feature__title">Featured</h2>
-    <div className="featured__container">
-            {/* feauterd watches */}
-    </div>
-</section>
-  )
-}
+      <h2 className="feature__title">Featured</h2>
+      <div className="featured__container">
+        {featuredWatches.map((watch, index) => (
+          <FeatureCard key={index} {...watch} />
+        ))}
+      </div>
+    </section>
+  );
+};
 
-export default Featured
+export default Featured;
